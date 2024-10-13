@@ -1,0 +1,8 @@
+# .gitignore file
+#ignore binary executables: 
+*.out
+#ignore files with no extension:
+*	
+!*/
+!*.*
+.vscode/
