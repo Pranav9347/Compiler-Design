@@ -2,7 +2,7 @@
 ## LEXICAL ANALYSIS:
 * Counting tokens
 * Grouping keywords, identifiers, literals, operators and delimiters
-* 
+
 ## OPERATIONS: 
 * FIRST
 * FOLLOW
