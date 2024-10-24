@@ -1,0 +1,7 @@
+Intermediate code generator(ICG):
+
+- Given an input string (ex:arithmetic expression), semantic analyser generates an SDT(Syntax directed tree) or a sematic tree or an Abstract syntax tree which is given as input to the ICG.
+
+- Converts it to three address code formats suitable for machine/target code generation: as triples, quadruples or Directed acyclic graphs
+
+- 
