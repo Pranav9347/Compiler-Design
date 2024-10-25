@@ -4,7 +4,7 @@
 #include<ctype.h>
 #define max_production_size 10
 
-int n,nt=0,t=0,item_no=0;
+int n,nt=0,t=0;
 char** productions;
 char* NT;
 char* T;
@@ -17,11 +17,6 @@ typedef struct item
     int no_of_productions;
     char prod[10][10];//set of productions with dot
 }item;
-
-item LR0ITEMS[15];//contains (item_no-1) items
-//constructing LR(0) parse table
-char LR0dfa[15][10]; //transition function mapping 
-
 char* insert_dot(char* s)
 {
     char* insert_prod = (char*)malloc(10*sizeof(char));
@@ -31,11 +26,10 @@ char* insert_dot(char* s)
     while(s[o]!='\0'){
         insert_prod[o+1] = s[o];
         o++;
-    }
+}
     insert_prod[o+1]='\0';
     return insert_prod;
 }
-
 void closure(item* i)//for every production in the item, if NT follows a dot expand and include it
 {
     char* append;
@@ -45,8 +39,6 @@ void closure(item* i)//for every production in the item, if NT follows a dot exp
         k=0;
         while(i->prod[j][k] != '.')
             k++;
-        if(i->prod[j][k+1] == '\0')//if dot is at the end
-            break;
         if(isupper(i->prod[j][k+1]))//if NT follows a dot
             for(int l=0; l<n; l++)
                 if(productions[l][0]==i->prod[j][k+1])
@@ -64,122 +56,33 @@ void closure(item* i)//for every production in the item, if NT follows a dot exp
                     }
                 }
     }
-    // printf("item_no: %d:\n",i->item_no);
-    // for(int j=0; j<i->no_of_productions; j++)
-    //     printf("%c->%s\n",i->prod[j][0],(i->prod[j])+1);
-    // printf("\n");
-}
-
-char* move_dot(char* str,int v)//v is the dot position: just swap the dot and the following symbol
-{
-    char* new_str = (char*)malloc(10*sizeof(char));
-    strcpy(new_str,str);
-    int temp = new_str[v];
-    new_str[v] = new_str[v+1];
-    new_str[v+1] = temp;
-    return new_str;
-}
-
-item GOTO(item *i, char s)//returns the goto item of an item on a NT
-{
-    item new = {item_no++, 0, "\0"};
-    char c, *gOtO;
-    int v=1;
     for(int j=0; j<i->no_of_productions; j++)
-    {
-        v=1;
-        //move till dot and check the following symbol
-        c = i->prod[j][v];
-        while(c!='.')
-        {
-            v++;
-            c = i->prod[j][v];
-        }
-        if(i->prod[j][v+1]==s)//if the next symbol to dot is the NT
-        {
-            gOtO = move_dot(i->prod[j],v);
-            strcpy(new.prod[new.no_of_productions++],gOtO);
-            free(gOtO);
-            closure(&new);
-        }
-    }
-    return new;
+        printf("%c->%s\n",i->prod[j][0],(i->prod[j])+1);
+    printf("\n");
 }
-
-char closure_exists(char* pdn)
-{
-    int b=0;
-    char c;
-    do
-    {
-        c = pdn[b];
-        b++;
-    }while(c!='.');
-    if(pdn[b]=='\0')
-        return '\0';
-    else return pdn[b];
-}
-int already_in_lr0items(item temp)
-{
-    int count;
-    for(int i=0; i<item_no; i++)
-    {
-        count = 0;
-        if(LR0ITEMS[i].no_of_productions!=temp.no_of_productions)
-            continue;
-        else
-        {
-            for(int j=0; j<temp.no_of_productions; j++)
-            {
-                if(strcmp(temp.prod[j],LR0ITEMS[i].prod[j])!=0)
-                    break;
-                else count++;
-            }
-            if(count == temp.no_of_productions)
-                return 1;
-        }
-    }
-    return 0;
-}
-void lr0_items()
-{
-    //initialize 1st item:
-    item i0 = {item_no,1,"Z.S"};//creating a new item with augmented production
-    closure(&i0);
-    char goto_sym;
-    LR0ITEMS[0] = i0;
-    int h=++item_no;
-    item temp;
-    // for(int j=0; j<i0.no_of_productions;j++)
-    // {
-    //     LR0ITEMS[j+1] = GOTO(&i0,i0.prod[j][2]);
-    // }
-    for(int i=0; i<item_no; i++)
-    {
-        for(int j=0; j<LR0ITEMS[i].no_of_productions; j++)
-        {
-            if((goto_sym=closure_exists(LR0ITEMS[i].prod[j]))!='\0')//then goto exists on goto_sym
-                temp = GOTO(&LR0ITEMS[i],goto_sym);
-            else
-                continue;
-            if(!already_in_lr0items(temp))
-                LR0ITEMS[h++] = temp;
-            else item_no--;
-        }
-    }
-    for(int r=0; r<h; r++)
-    {
-        printf("item_no: %d:\n",LR0ITEMS[r].item_no);
-        for(int j=0; j<LR0ITEMS[r].no_of_productions; j++)
-            printf("%c->%s\n",LR0ITEMS[r].prod[j][0],(LR0ITEMS[r].prod[j])+1);
-        printf("\n");
-    }
-}
+// void lr0_items()
+// {
+//     //initialize 1st item:
+//     char p[10][10];
+//     char go[10]="\0";
+//     for(int i=0;i<10;i++)
+//     {
+//         go[i]=0;
+//         for(int j=0;j<10;j++)
+//         {
+//             p[i][j]='\0';
+//         }
+//     }
+//     strcpy(p[0],"X.");
+//     p[0][2] = productions[0][0];
+//     item i0 = {0,p,'\0'};
+//     printf("item id:%d,productions=%s,goto=%s",i0.item_no,i0.prod[0],i0.GOTO);
+// }
 int main()
 {
     // printf("Enter the number of productions: ");
     // scanf("%d",&n);
-    FILE* fptr = fopen("g1.txt","r");
+    FILE* fptr = fopen("grammar1.txt","r");
     fscanf(fptr,"%d\n",&n);
 
     productions = (char**)malloc(n*sizeof(char*));//allocating space for n strings
@@ -202,8 +105,8 @@ int main()
     get_T();
     printf("no of NT: %d\n",nt);
     printf("no of T: %d\n",t);
-    
-    lr0_items();
+    item i = {0,1,"Z.S"};//creating a new item with augmented production
+    closure(&i);
     fclose(fptr);
     return 0;
 }

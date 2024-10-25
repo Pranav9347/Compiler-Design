@@ -376,5 +376,4 @@ void rem_duplicates(char* str, int n)
         }
         c=str[g++];
     }
-
 }
