@@ -103,7 +103,7 @@ void first(char s)
                                 k++;
                                 c = FIRST[1][get_pos(1,s)][k];
                             }
-                            j++;
+                            j++;//next symbol of the production
                             if(productions[i][j] == '\0')  //add epsilon if its empty(if last symbol also has epsilon)
                             {
                                 FIRST[1][get_pos(1,s)][k++] = '#';
