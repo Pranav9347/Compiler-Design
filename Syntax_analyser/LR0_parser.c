@@ -19,7 +19,8 @@ typedef struct item
 }item;
 
 item LR0ITEMS[15];//contains (item_no-1) items
-
+//constructing LR(0) parse table
+char LR0dfa[15][10]; //transition function mapping 
 
 char* insert_dot(char* s)
 {

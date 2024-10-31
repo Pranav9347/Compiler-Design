@@ -1,5 +1,8 @@
 # .gitignore file
 #ignore binary executables: 
 *.out
-#ignore files with no extension:
+#ignore .vscode:
 .vscode/
+#ignore the project directory as it'll be a separate git repo:
+Project_Simat_language/
+Project_Simat_language_local (Copy)/
